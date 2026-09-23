@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Poder adquisitivo docente por provincia – Argentina 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Literata:opsz,wght@7..72,400;7..72,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#F3F6F9; --surface:#FFFFFF; --ink:#16243A; --muted:#566781; --line:#D6DEE8;
+  --nominal:#E3A23B; --real:#1E4E8C; --celeste:#5FA8DC; --up:#1E7A5A; --down:#C0632A;
+  --nodata:#E3E8EE; --soft:#EAF2FA;
+  --sans:"Archivo", "Helvetica Neue", Arial, sans-serif;
+  --serif:"Literata", Georgia, "Times New Roman", serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1622; --surface:#152032; --ink:#E7EEF7; --muted:#9BAAC0; --line:#27364D;
+    --nominal:#F0B65A; --real:#8EBBEF; --celeste:#7DBEEA; --up:#5CC79E; --down:#F0915A;
+    --nodata:#22304A; --soft:#1A2A42;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1622; --surface:#152032; --ink:#E7EEF7; --muted:#9BAAC0; --line:#27364D;
+  --nominal:#F0B65A; --real:#8EBBEF; --celeste:#7DBEEA; --up:#5CC79E; --down:#F0915A;
+  --nodata:#22304A; --soft:#1A2A42;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+img{max-width:100%}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--celeste);outline-offset:2px}
+
+/* Encabezado */
+header.top{padding:40px 0 18px;border-bottom:4px solid var(--ink)}
+.flag{display:flex;gap:6px;margin-bottom:18px}
+.flag span{width:34px;height:6px;border-radius:3px;background:var(--celeste)}
+.flag span:nth-child(2){background:var(--surface);border:1px solid var(--line)}
+h1{font-stretch:78%;font-weight:800;font-size:clamp(2rem,5.4vw,3.7rem);line-height:1.02;letter-spacing:-.01em;margin:0 0 14px;max-width:16ch}
+.lede{font-family:var(--serif);font-size:1.12rem;line-height:1.6;color:var(--muted);max-width:62ch;margin:0}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.btn{border:1.5px solid var(--ink);background:transparent;border-radius:999px;padding:7px 15px;cursor:pointer;font-weight:600;font-size:.92rem}
+.btn[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+
+/* Vistazo y navegación */
+.eyebrow{font-stretch:90%;font-weight:700;font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;color:var(--celeste);margin:0 0 6px}
+.secnav{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:18px;font-size:.9rem}
+.secnav a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:1px}
+.secnav a:hover{color:var(--ink);border-color:var(--ink)}
+.glance{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:24px}
+.glance > div{background:var(--surface);padding:14px 16px}
+.glance small{display:block;color:var(--muted);font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.glance b{display:block;font-stretch:78%;font-weight:800;font-size:1.65rem;line-height:1.1;margin:4px 0 2px;font-variant-numeric:tabular-nums}
+.glance span{font-size:.85rem;color:var(--muted)}
+/* Filtros */
+.filters{box-shadow:0 8px 14px -12px rgba(0,0,0,.3);position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 0}
+.filters .wrap{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center}
+.fgroup{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.fgroup > b{font-weight:700;font-size:.9rem;margin-right:4px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:5px 11px;cursor:pointer;font-size:.9rem}
+.chip[aria-pressed="true"]{background:var(--real);border-color:var(--real);color:var(--surface)}
+select{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 10px;font-size:.92rem;max-width:100%}
+
+/* Secciones */
+section.block{padding:34px 0 10px}
+.grid2{display:grid;grid-template-columns:1fr;gap:10px 40px}
+@media(min-width:960px){.grid2{grid-template-columns:1.25fr 1fr}}
+h2{font-stretch:88%;font-weight:750;font-size:1.65rem;line-height:1.15;margin:0 0 6px}
+h3{font-weight:700;font-size:1.05rem;margin:18px 0 6px}
+.explica{font-family:var(--serif);color:var(--muted);font-size:1rem;line-height:1.65;max-width:64ch;margin:0 0 16px}
+.explica strong{color:var(--ink);font-weight:600}
+details.como{font-family:var(--serif);font-size:.95rem;color:var(--muted);border-left:3px solid var(--celeste);padding:4px 0 4px 14px;margin:10px 0 18px;max-width:64ch}
+details.como summary{cursor:pointer;font-family:var(--sans);font-weight:600;color:var(--ink)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 1px 2px rgba(22,36,58,.04),0 10px 28px -16px rgba(22,36,58,.18)}
+@media(max-width:700px){.filters{position:static}.panel{padding:14px}}
+.chart{width:100%;overflow-x:auto}
+.chart svg{display:block;width:100%;height:auto}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:.88rem;color:var(--muted);margin-bottom:8px}
+.legend i{display:inline-block;width:14px;height:10px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.empty{padding:28px 10px;text-align:center;color:var(--muted);font-family:var(--serif)}
+
+/* Brecha */
+.gap{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.gap .g{border-top:3px solid var(--nominal);padding-top:8px}
+.gap .g.r{border-top-color:var(--real)}
+.gap .big{font-stretch:75%;font-weight:800;font-size:2.4rem;line-height:1}
+.gap small{display:block;color:var(--muted);font-size:.85rem;margin-top:4px}
+.insight{background:var(--soft);border-radius:10px;padding:12px 14px;font-family:var(--serif);margin-top:14px}
+
+/* Mapa */
+.mapwrap{max-width:430px;margin:0 auto}
+.tile{cursor:pointer}
+.tile:focus{outline:none}
+.tile:focus-visible rect{stroke:var(--ink);stroke-width:3}
+.scale{display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--muted);margin-top:10px}
+.scale .bar{flex:1;height:10px;border-radius:5px;background:linear-gradient(90deg,#D98A2B,#EEF2F6,#1E4E8C)}
+.info{margin-top:14px;min-height:92px}
+.info dl{display:grid;grid-template-columns:auto 1fr;gap:3px 14px;margin:6px 0 0;font-size:.95rem}
+.info dt{color:var(--muted)}
+.info dd{margin:0;font-weight:600;font-variant-numeric:tabular-nums}
+
+/* Simulador */
+.simgrid{display:grid;grid-template-columns:1fr;gap:22px}
+@media(min-width:900px){.simgrid{grid-template-columns:340px 1fr}}
+.ctl{margin-bottom:18px}
+.ctl label{display:flex;justify-content:space-between;font-weight:600;font-size:.95rem;margin-bottom:6px}
+.ctl output{font-stretch:80%;font-weight:800;font-size:1.3rem;color:var(--real)}
+input[type=range]{width:100%;accent-color:var(--real)}
+.headline{font-stretch:82%;font-weight:750;font-size:1.35rem;line-height:1.25;margin:0 0 12px}
+.tbl{width:100%;border-collapse:collapse;font-size:.93rem;font-variant-numeric:tabular-nums}
+.tbl th{text-align:left;font-weight:600;color:var(--muted);border-bottom:2px solid var(--line);padding:7px 8px;white-space:nowrap}
+.tbl td{border-bottom:1px solid var(--line);padding:8px}
+.tbl td.num,.tbl th.num{text-align:right}
+.pos{color:var(--up);font-weight:700}.neg{color:var(--down);font-weight:700}
+.scroll{overflow-x:auto}
+
+/* Datos */
+.data input[type=number]{width:130px;border:1px solid var(--line);background:var(--bg);border-radius:6px;padding:5px 7px;text-align:right}
+.data .add{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+.notice{border-left:4px solid var(--nominal);background:var(--soft);padding:10px 14px;border-radius:0 8px 8px 0;font-family:var(--serif);margin:0 0 16px;max-width:72ch}
+.hist-ctl{display:flex;flex-wrap:wrap;gap:12px 26px;margin-bottom:14px;align-items:center}
+.trend{display:inline-block;padding:5px 14px;border-radius:999px;font-weight:750;font-size:1rem;border:2px solid currentColor}
+.trend.up{color:var(--up)}.trend.flat{color:var(--muted)}.trend.down{color:var(--down)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px 18px;margin:14px 0 6px}
+.kpis div{border-top:3px solid var(--line);padding-top:6px;font-size:.88rem;color:var(--muted)}
+.kpis b{display:block;font-stretch:78%;font-weight:800;font-size:1.45rem;color:var(--ink);font-variant-numeric:tabular-nums}
+.summary{display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px}
+@media(min-width:760px){.summary{grid-template-columns:1fr 1fr 1fr}}
+.summary > div{background:var(--soft);border-radius:10px;padding:12px 14px;font-family:var(--serif);font-size:.96rem}
+.summary h3{font-family:var(--sans);margin:0 0 4px;font-size:.95rem}
+.summary ul{margin:4px 0 0;padding-left:18px}
+textarea{width:100%;min-height:120px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:10px;font:13px/1.5 ui-monospace,Menlo,Consolas,monospace}
+.linkbtn{background:none;border:none;color:var(--down);cursor:pointer;text-decoration:underline;padding:0}
+footer{padding:30px 0 50px;color:var(--muted);font-size:.88rem;font-family:var(--serif)}
+
+/* Modo presentación */
+body.pres{font-size:19px}
+body.pres .solo-edicion,body.pres details.como{display:none}
+body.pres h1{font-size:clamp(2.4rem,6vw,4.4rem)}
+@media (prefers-reduced-motion: no-preference){
+  .bar-anim{transition:width .35s ease}
+}
+@media print{.filters,.toolbar,.solo-edicion{display:none}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="flag" aria-hidden="true"><span></span><span></span><span></span></div>
+    <h1>Poder adquisitivo docente por provincia – Argentina 2026</h1>
+    <p class="lede">Cobrar más no siempre significa poder comprar más. Este tablero compara lo que dice el recibo (salario nominal) con lo que ese sueldo rinde en cada provincia según su costo de vida (salario real).</p>
+    <div class="toolbar">
+      <button class="btn" id="btnPres" aria-pressed="false">Modo presentación</button>
+      <button class="btn" id="btnTheme" aria-pressed="false">Tema oscuro</button>
+    </div>
+    <div class="glance" id="glance" aria-live="polite"></div>
+    <nav class="secnav" aria-label="Secciones">
+      <a href="#sec-ranking">Ranking</a><a href="#sec-barras">Nominal vs. real</a><a href="#sec-mapa">Mapa</a><a href="#sec-sim">Simulador</a><a href="#sec-hist">Serie histórica</a><a href="#sec-datos">Datos y fuentes</a>
+    </nav>
+  </div>
+</header>
+
+<!-- 3. Panel de filtros -->
+<nav class="filters" aria-label="Filtros">
+  <div class="wrap">
+    <div class="fgroup" role="group" aria-label="Región">
+      <b>Región</b>
+      <span id="regionChips"></span>
+    </div>
+    <div class="fgroup">
+      <b><label for="cargoSel">Cargo</label></b>
+      <select id="cargoSel"></select>
+    </div>
+    <div class="fgroup" role="group" aria-label="Fuente de datos">
+      <b>Datos</b>
+      <button class="chip" data-ds="oficial" aria-pressed="true">Oficiales</button>
+      <button class="chip" data-ds="autor" aria-pressed="false">Con datos del autor</button>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <!-- 4. Brecha y ranking -->
+  <section class="block" id="sec-ranking">
+    <p class="eyebrow">01 · Ranking y brecha</p>
+    <h2>El ranking cambia cuando se descuenta el costo de vida</h2>
+    <p class="explica">A la izquierda, las provincias ordenadas por lo que cobra un docente. A la derecha, por lo que <strong>ese sueldo puede comprar</strong>. Una línea que sube indica una provincia que gana posiciones al ajustar por costo de vida; una que baja, una provincia donde el sueldo alto se diluye en precios altos.</p>
+    <div class="panel">
+      <div class="chart" id="slope"></div>
+      <div class="gap" id="gap"></div>
+      <div class="insight" id="slopeInsight"></div>
+    </div>
+    <details class="como"><summary>¿Cómo se mide la brecha?</summary>
+      <p>La brecha es el cociente entre el salario más alto y el más bajo de las provincias visibles. Si vale 2,0, el docente mejor pago cobra el doble que el peor pago. Comparar la brecha nominal con la real muestra cuánto de la desigualdad “se achica” (o se agranda) cuando se consideran los precios de cada lugar.</p>
+    </details>
+  </section>
+
+  <div class="grid2">
+    <!-- 1. Barras nominal vs real -->
+    <section class="block" id="sec-barras">
+      <p class="eyebrow">02 · Comparación por provincia</p>
+    <h2>Nominal contra real</h2>
+      <p class="explica">Cada provincia tiene dos barras: la dorada es el salario del recibo y la azul es su equivalente en poder de compra. Cuando la azul es <strong>más larga</strong> que la dorada, la provincia es más barata que la referencia; cuando es más corta, más cara.</p>
+      <div class="panel">
+        <div class="legend">
+          <span><i style="background:var(--nominal)"></i>Salario nominal</span>
+          <span><i style="background:var(--real)"></i>Salario real</span>
+          <span id="legSim" hidden><i style="background:transparent;border:1.5px dashed var(--real)"></i>Real simulado</span>
+        </div>
+        <div class="fgroup" style="margin-bottom:8px">
+          <b>Ordenar por</b>
+          <button class="chip" data-sort="real" aria-pressed="true">Real</button>
+          <button class="chip" data-sort="nominal" aria-pressed="false">Nominal</button>
+        </div>
+        <div class="chart" id="bars"></div>
+      </div>
+    </section>
+
+    <!-- 2. Mapa de calor -->
+    <section class="block" id="sec-mapa">
+      <p class="eyebrow">03 · Mapa de calor</p>
+    <h2>Mapa del poder adquisitivo</h2>
+      <p class="explica">Cada casilla es una jurisdicción, ubicada de forma esquemática según su posición en el país. El color compara el salario real con el <strong>promedio simple de las 24 jurisdicciones</strong>: azul por encima, ocre por debajo. Tocá una casilla para ver el detalle.</p>
+      <div class="panel">
+        <div class="fgroup" style="margin-bottom:6px">
+          <b>Mostrar</b>
+          <button class="chip" data-map="hoy" aria-pressed="true">Hoy</button>
+          <button class="chip" data-map="sim" aria-pressed="false">Con simulación</button>
+        </div>
+        <div class="mapwrap chart" id="map"></div>
+        <div class="scale mapwrap"><span>−40%</span><div class="bar"></div><span>+40%</span></div>
+        <div class="info" id="mapInfo"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- 5. Simulador -->
+  <section class="block" id="sec-sim">
+    <p class="eyebrow">04 · Simulador</p>
+    <h2>Simulador de aumentos</h2>
+    <p class="explica">Probá un aumento salarial y una inflación esperada. El poder adquisitivo sólo mejora si el aumento <strong>le gana a la inflación</strong>: la variación real es (1 + aumento) ÷ (1 + inflación) − 1.</p>
+    <div class="panel simgrid">
+      <div>
+        <div class="ctl">
+          <label for="rngA">Aumento salarial <output id="outA">0%</output></label>
+          <input type="range" id="rngA" min="0" max="150" step="1" value="0">
+        </div>
+        <div class="ctl">
+          <label for="rngP">Inflación del período <output id="outP">0%</output></label>
+          <input type="range" id="rngP" min="0" max="150" step="1" value="0">
+        </div>
+        <div class="ctl">
+          <label for="alcance">Aplicar el aumento a</label>
+          <select id="alcance" style="width:100%"></select>
+        </div>
+        <button class="btn" id="simReset">Volver a cero</button>
+      </div>
+      <div>
+        <p class="headline" id="simHeadline"></p>
+        <div class="scroll"><table class="tbl" id="simTable"></table></div>
+        <details class="como"><summary>¿Qué es “para llegar al promedio”?</summary>
+          <p>Es el aumento nominal que necesitaría cada provincia, con la inflación elegida, para que su salario real iguale al promedio actual de las provincias cargadas. Si aparece “ya supera”, la provincia está por encima del promedio incluso después de la inflación.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Serie histórica -->
+  <section class="block" id="sec-hist">
+    <p class="eyebrow">05 · Evolución en el tiempo</p>
+    <h2>Serie histórica del poder adquisitivo docente (2010–2026)</h2>
+    <p class="explica">La línea dorada punteada es lo que figura en el recibo en cada momento; la azul es ese mismo sueldo expresado en <strong>pesos de junio de 2026</strong>, es decir, descontando la inflación acumulada desde entonces. Si la azul baja, el sueldo compra menos que antes aunque la dorada suba.</p>
+    <p class="notice" id="histNotice"></p>
+    <div class="panel">
+      <div class="hist-ctl">
+        <div class="fgroup"><b><label for="hProv">Provincia</label></b><select id="hProv"></select></div>
+        <div class="fgroup"><b><label for="hCargo">Cargo</label></b><select id="hCargo"></select></div>
+        <div class="fgroup" role="group" aria-label="Ajuste"><b>Ajuste</b>
+          <button class="chip" data-haj="ipc" aria-pressed="true">Inflación INDEC</button>
+          <button class="chip" data-haj="col" aria-pressed="false">Inflación + costo de vida regional</button></div>
+        <div class="fgroup" role="group" aria-label="Comparar con"><b>Comparar con</b>
+          <button class="chip" data-hcomp="nacional" aria-pressed="true">Promedio nacional</button>
+          <button class="chip" data-hcomp="region" aria-pressed="false">Promedio de su región</button></div>
+        <label class="fgroup" style="font-size:.92rem"><input type="checkbox" id="hNom" checked> Mostrar nominal</label>
+      </div>
+      <div class="legend" id="hLegend"></div>
+      <div class="chart" id="histChart"></div>
+      <div class="kpis" id="hKpis"></div>
+      <div class="summary" id="hSummary"></div>
+      <details class="como"><summary>¿Cómo se calcula?</summary>
+        <p>Real (inflación INDEC) = nominal × IPC de junio 2026 ÷ IPC del mes. Con “costo de vida regional” además se divide por el índice de la región (GBA = 1), así las provincias quedan comparables entre sí. La tendencia compara el primer y el último dato: más de +5% es crecimiento real, menos de −5% es pérdida, y en el medio, estancamiento. Se marcan como saltos abruptos los cambios reales de ±15% o más entre dos datos consecutivos.</p>
+      </details>
+      <details class="como solo-edicion" id="hImport"><summary>Cargar años anteriores (2010–2023)</summary>
+        <p>Pegá una fila por dato con el formato <code>AAAA-MM;CÓDIGO;valor</code>. CÓDIGO es la sigla de la provincia (NQN, RNG, CABA, BUE…) o <code>IPC</code> para el índice de precios. El IPC de diciembre de 2016 a 2023 ya está cargado: si importás salarios de diciembre de esos años no hace falta agregar IPC. Para otros meses, o antes de 2016, sumá filas <code>IPC</code> e incluí el de <code>2023-12</code> para empalmar. Fuente sugerida para salarios: planilla “Salario Bruto MG10” de la Secretaría de Educación (argentina.gob.ar, Series de salario docente). Para 2010–2016 no hay IPC nacional del INDEC: usá un índice provincial (CABA, San Luis) y aclaralo al presentar.</p>
+        <textarea id="hText" placeholder="2016-12;RNG;15230&#10;2017-12;RNG;19870&#10;2016-12;NQN;..."></textarea>
+        <p><button class="btn" id="hImpBtn">Importar datos</button> <button class="linkbtn" id="hClear">Borrar datos importados</button> <span id="hMsg" style="margin-left:8px"></span></p>
+      </details>
+    </div>
+  </section>
+
+  <!-- Datos y supuestos -->
+  <section class="block solo-edicion" id="sec-datos">
+    <p class="eyebrow">06 · Datos y fuentes</p>
+   
